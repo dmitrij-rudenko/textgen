@@ -21,10 +21,12 @@ async function main() {
   const textData = new TextData('text-data', text, sampleLen, 60);
 
   const [seed, seedIndices] = textData.getRandomSlice();
+  
+  console.log(`Seed text:\n"${seed}"\n`);
 
   const generated = await generateText(
     model, textData, seedIndices, 60, 1);
-
+  
   console.log(`Generated text:\n"${generated}"\n`);
 
 }
