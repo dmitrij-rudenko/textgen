@@ -38,6 +38,11 @@ export const TEXT_DATA_URLS = {
   'tfjs-code': {
     url: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.11.7/dist/tf.js',
     needle: 'TensorFlow.js Code (Compiled, 0.11.7)'
+  },
+  'data': {
+    url:
+        'https://storage.googleapis.com/tfjs-examples/lstm-text-generation/data/t8.shakespeare.txt',
+    needle: 'Data'
   }
 }
 

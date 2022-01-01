@@ -18,6 +18,7 @@
     "gen": "babel-node gen_node.js",
     "link-local": "yalc link",
     "test": "babel-node run_tests.js",
+    "make": "babel-node generator.js",
     "train": "babel-node train_node.js"
   },
   "devDependencies": {

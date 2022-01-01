@@ -28,9 +28,9 @@
 
 import * as tf from '@tensorflow/tfjs';
 
-import { TextData } from './data';
+import {TextData} from './data';
 import * as model from './model';
-import { onTextGenerationBegin, onTextGenerationChar, onTrainBatchEnd, onTrainBegin, onTrainEpochEnd, setUpUI } from './ui';
+import {onTextGenerationBegin, onTextGenerationChar, onTrainBatchEnd, onTrainBegin, onTrainEpochEnd, setUpUI} from './ui';
 
 /**
  * Class that manages LSTM-based text generation.
@@ -62,7 +62,7 @@ export class LSTMTextGenerator {
    */
   createModel(lstmLayerSizes) {
     this.model = model.createModel(
-      this.sampleLen_, this.charSetSize_, lstmLayerSizes);
+        this.sampleLen_, this.charSetSize_, lstmLayerSizes);
   }
 
   /**
@@ -106,8 +106,8 @@ export class LSTMTextGenerator {
     };
 
     await model.fitModel(
-      this.model, this.textData_, numEpochs, examplesPerEpoch, batchSize,
-      validationSplit, callbacks);
+        this.model, this.textData_, numEpochs, examplesPerEpoch, batchSize,
+        validationSplit, callbacks);
   }
 
   /**
@@ -123,8 +123,8 @@ export class LSTMTextGenerator {
   async generateText(sentenceIndices, length, temperature) {
     onTextGenerationBegin();
     return await model.generateText(
-      this.model, this.textData_, sentenceIndices, length, temperature,
-      onTextGenerationChar);
+        this.model, this.textData_, sentenceIndices, length, temperature,
+        onTextGenerationChar);
   }
 };
 
@@ -144,7 +144,7 @@ export class SaveableLSTMTextGenerator extends LSTMTextGenerator {
     this.modelIdentifier_ = textData.dataIdentifier();
     this.MODEL_SAVE_PATH_PREFIX_ = 'indexeddb://lstm-text-generation';
     this.modelSavePath_ =
-      `${this.MODEL_SAVE_PATH_PREFIX_}/${this.modelIdentifier_}`;
+        `${this.MODEL_SAVE_PATH_PREFIX_}/${this.modelIdentifier_}`;
   }
 
   /**
@@ -170,8 +170,8 @@ export class SaveableLSTMTextGenerator extends LSTMTextGenerator {
       console.log(`Loaded model from ${this.modelSavePath_}`);
     } else {
       throw new Error(
-        `Cannot find model at ${this.modelSavePath_}. ` +
-        `Creating model from scratch.`);
+          `Cannot find model at ${this.modelSavePath_}. ` +
+          `Creating model from scratch.`);
     }
   }
 
@@ -194,7 +194,7 @@ export class SaveableLSTMTextGenerator extends LSTMTextGenerator {
   async removeModel() {
     if (await this.checkStoredModelStatus() == null) {
       throw new Error(
-        'Cannot remove locally saved model because it does not exist.');
+          'Cannot remove locally saved model because it does not exist.');
     }
     return await tf.io.removeModel(this.modelSavePath_);
   }
