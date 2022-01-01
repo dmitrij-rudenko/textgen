@@ -22,17 +22,17 @@ import * as tf from '@tensorflow/tfjs';
 export const TEXT_DATA_URLS = {
   'nietzsche': {
     url:
-        'https://storage.googleapis.com/tfjs-examples/lstm-text-generation/data/nietzsche.txt',
+      'https://storage.googleapis.com/tfjs-examples/lstm-text-generation/data/nietzsche.txt',
     needle: 'Nietzsche'
   },
   'julesverne': {
     url:
-        'https://storage.googleapis.com/tfjs-examples/lstm-text-generation/data/t1.verne.txt',
+      'https://storage.googleapis.com/tfjs-examples/lstm-text-generation/data/t1.verne.txt',
     needle: 'Jules Verne'
   },
   'shakespeare': {
     url:
-        'https://storage.googleapis.com/tfjs-examples/lstm-text-generation/data/t8.shakespeare.txt',
+      'https://storage.googleapis.com/tfjs-examples/lstm-text-generation/data/t8.shakespeare.txt',
     needle: 'Shakespeare'
   },
   'tfjs-code': {
@@ -40,8 +40,7 @@ export const TEXT_DATA_URLS = {
     needle: 'TensorFlow.js Code (Compiled, 0.11.7)'
   },
   'data': {
-    url:
-        'https://storage.googleapis.com/tfjs-examples/lstm-text-generation/data/t8.shakespeare.txt',
+    url: 'https://raw.githubusercontent.com/dmitrij-rudenko/textgen/master/data.txt',
     needle: 'Data'
   }
 }
@@ -68,11 +67,11 @@ export class TextData {
    */
   constructor(dataIdentifier, textString, sampleLen, sampleStep) {
     tf.util.assert(
-        sampleLen > 0,
-        `Expected sampleLen to be a positive integer, but got ${sampleLen}`);
+      sampleLen > 0,
+      `Expected sampleLen to be a positive integer, but got ${sampleLen}`);
     tf.util.assert(
-        sampleStep > 0,
-        `Expected sampleStep to be a positive integer, but got ${sampleStep}`);
+      sampleStep > 0,
+      `Expected sampleStep to be a positive integer, but got ${sampleStep}`);
 
     if (!dataIdentifier) {
       throw new Error('Model identifier is not provided.');
@@ -140,11 +139,11 @@ export class TextData {
     }
 
     const xsBuffer = new tf.TensorBuffer([
-        numExamples, this.sampleLen_, this.charSetSize_]);
-    const ysBuffer  = new tf.TensorBuffer([numExamples, this.charSetSize_]);
+      numExamples, this.sampleLen_, this.charSetSize_]);
+    const ysBuffer = new tf.TensorBuffer([numExamples, this.charSetSize_]);
     for (let i = 0; i < numExamples; ++i) {
       const beginIndex = this.exampleBeginIndices_[
-          this.examplePosition_ % this.exampleBeginIndices_.length];
+        this.examplePosition_ % this.exampleBeginIndices_.length];
       for (let j = 0; j < this.sampleLen_; ++j) {
         xsBuffer.set(1, i, j, this.indices_[beginIndex + j]);
       }
@@ -186,7 +185,7 @@ export class TextData {
    */
   getRandomSlice() {
     const startIndex =
-        Math.round(Math.random() * (this.textLen_ - this.sampleLen_ - 1));
+      Math.round(Math.random() * (this.textLen_ - this.sampleLen_ - 1));
     const textSlice = this.slice_(startIndex, startIndex + this.sampleLen_);
     return [textSlice, this.textToIndices(textSlice)];
   }
@@ -230,8 +229,8 @@ export class TextData {
     // Prepare beginning indices of examples.
     this.exampleBeginIndices_ = [];
     for (let i = 0;
-        i < this.textLen_ - this.sampleLen_ - 1;
-        i += this.sampleStep_) {
+      i < this.textLen_ - this.sampleLen_ - 1;
+      i += this.sampleStep_) {
       this.exampleBeginIndices_.push(i);
     }
 

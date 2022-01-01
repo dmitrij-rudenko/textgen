@@ -60,7 +60,7 @@ function parseArgs() {
   });
   parser.addArgument('--epochs', {
     type: 'int',
-    defaultValue: 150,
+    defaultValue: 1,
     help: 'Number of training epochs'
   });
   parser.addArgument('--examplesPerEpoch', {
@@ -85,6 +85,7 @@ function parseArgs() {
   });
   parser.addArgument('--savePath', {
     type: 'string',
+    defaultValue: './model',
     help: 'Path to which the model will be saved (optional)'
   });
   parser.addArgument('--lstmLayerSize', {
@@ -106,25 +107,22 @@ async function main() {
     require('@tensorflow/tfjs-node');
   }
 
-  // Create the text data object.
-  const textDataURL = TEXT_DATA_URLS[args.textDatasetName].url;
-  const localTextDataPath = path.join(os.tmpdir(), path.basename(textDataURL));
-  await maybeDownload(textDataURL, localTextDataPath);
-  const text = fs.readFileSync(localTextDataPath, { encoding: 'utf-8' });
+  const text = fs.readFileSync('./data.txt', { encoding: 'utf-8' });
   const textData =
     new TextData('text-data', text, args.sampleLen, args.sampleStep);
 
-  // Convert lstmLayerSize from string to number array before handing it
-  // to `createModel()`.
   const lstmLayerSize = args.lstmLayerSize.indexOf(',') === -1 ?
     Number.parseInt(args.lstmLayerSize) :
     args.lstmLayerSize.split(',').map(x => Number.parseInt(x));
 
   const model = createModel(
-    textData.sampleLen(), textData.charSetSize(), lstmLayerSize);
+    textData.sampleLen(), 
+    textData.charSetSize(), 
+    lstmLayerSize
+  );
+  
   compileModel(model, args.learningRate);
 
-  // Get a seed text for display in the course of model training.
   const [seed, seedIndices] = textData.getRandomSlice();
   console.log(`Seed text:\n"${seed}"\n`);
 
@@ -132,22 +130,28 @@ async function main() {
 
   let epochCount = 0;
   await fitModel(
-    model, textData, args.epochs, args.examplesPerEpoch, args.batchSize,
-    args.validationSplit, {
-    onTrainBegin: async () => {
-      epochCount++;
-      console.log(`Epoch ${epochCount} of ${args.epochs}:`);
-    },
-    onTrainEnd: async () => {
-      DISPLAY_TEMPERATURES.forEach(async temperature => {
-        const generated = await generateText(
-          model, textData, seedIndices, args.displayLength, temperature);
-        console.log(
-          `Generated text (temperature=${temperature}):\n` +
-          `"${generated}"\n`);
-      });
-    }
-  });
+    model,
+    textData,
+    args.epochs,
+    args.examplesPerEpoch,
+    args.batchSize,
+    args.validationSplit,
+    {
+      onTrainBegin: async () => {
+        epochCount++;
+        console.log(`Epoch ${epochCount} of ${args.epochs}:`);
+      },
+      onTrainEnd: async () => {
+        DISPLAY_TEMPERATURES.forEach(async temperature => {
+          const generated = await generateText(
+            model, textData, seedIndices, args.displayLength, temperature);
+
+          console.log(
+            `Generated text (temperature=${temperature}):\n` +
+            `"${generated}"\n`);
+        });
+      }
+    });
 
   if (args.savePath != null && args.savePath.length > 0) {
     await model.save(`file://${args.savePath}`);
