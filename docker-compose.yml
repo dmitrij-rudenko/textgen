@@ -1,0 +1,7 @@
+version: '3'
+services:
+  tensorflowjs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tfjs-node:cpu
