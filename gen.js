@@ -22,14 +22,12 @@ async function main() {
   const text = ' сразу после университета я встречалась с этим Верноном Дурслем'
   const textData = new TextData('text-data', text, sampleLen, 60);
 
-  const ind = textData.textToIndices(text)
-  console.log(ind, 'ind')
+  const seedIndices = textData.textToIndices(text)
+  console.log(seedIndices, 'ind')
   
-  const [seed, seedIndices] = textData.getRandomSlice();
-  
-  console.log(`Seed text:\n"${seed}"\n`);
+  console.log(`Seed text:\n"${text}"\n`);
 
-  const generated = await generateText(model, fullTextData, ind, 60, 0.75);
+  const generated = await generateText(model, fullTextData, seedIndices, 60, 0.75);
   
   console.log(`Generated text:\n"${generated}"\n`);
 
